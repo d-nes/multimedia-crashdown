@@ -6,6 +6,8 @@ const gameTimeInput = document.getElementById('gameTime');
 const intervalInput = document.getElementById('intervalTime');
 const playerNameInput = document.getElementById('playerName');
 const highScoresList = document.getElementById('highScores');
+const toggleMusicBtn = document.getElementById('toggle-music');
+const backgroundMusic = document.getElementById('background-music');
 
 const rows = 10;
 const cols = 8;
@@ -14,13 +16,23 @@ const activeRows = 5;
 let boardData, score, timeLeft, gameInterval, newRowInterval;
 const colors = ['red', 'green', 'blue', 'yellow', 'purple'];
 
-// Gomb tiltása név hiányában
 playerNameInput.addEventListener('input', () => {
   startButton.disabled = playerNameInput.value.trim() === '';
 });
 
-// Start gomb esemény
 startButton.addEventListener('click', startGame);
+
+toggleMusicBtn.addEventListener('click', () => {
+    if (!backgroundMusic) return;
+  
+    if (backgroundMusic.muted) {
+      backgroundMusic.muted = false;
+      toggleMusicBtn.textContent = 'Zene ki';
+    } else {
+      backgroundMusic.muted = true;
+      toggleMusicBtn.textContent = 'Zene be';
+    }
+  });
 
 function startGame() {
   const playerName = playerNameInput.value.trim();

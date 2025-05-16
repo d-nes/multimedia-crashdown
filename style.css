@@ -148,5 +148,8 @@ body {
   #credits a:hover {
     text-decoration: underline;
   }
-  
+
+  #toggle-music {
+    margin-top: 10px;
+  }  
   
