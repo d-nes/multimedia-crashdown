@@ -1,14 +1,50 @@
 const board = document.getElementById('game-board');
 const scoreDisplay = document.getElementById('score');
 const timerDisplay = document.getElementById('timer');
+const startButton = document.getElementById('startButton');
+const gameTimeInput = document.getElementById('gameTime');
+const intervalInput = document.getElementById('intervalTime');
 
 const rows = 10;
 const cols = 8;
-const activeRows = 5; // induláskor ennyi sor látszik
-let boardData = Array(rows).fill(null).map(() => Array(cols).fill(null));
-let score = 0;
-let timeLeft = 60;
+const activeRows = 5;
+
+let boardData, score, timeLeft, gameInterval, newRowInterval;
 const colors = ['red', 'green', 'blue', 'yellow', 'purple'];
+
+startButton.addEventListener('click', startGame);
+
+function startGame() {
+  clearInterval(gameInterval);
+  clearInterval(newRowInterval);
+
+  score = 0;
+  timeLeft = parseInt(gameTimeInput.value);
+  const intervalTime = parseInt(intervalInput.value);
+
+  boardData = Array(rows).fill(null).map(() => Array(cols).fill(null));
+  scoreDisplay.textContent = '0';
+  timerDisplay.textContent = timeLeft;
+
+  createInitialBoard();
+
+  gameInterval = setInterval(() => {
+    timeLeft--;
+    timerDisplay.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(gameInterval);
+      clearInterval(newRowInterval);
+      alert('Lejárt az idő! Pontszám: ' + score);
+    }
+  }, 1000);
+
+  newRowInterval = setInterval(() => {
+    addNewRow();
+    applyGravity();
+    centerColumns();
+    updateBoard();
+  }, intervalTime * 1000);
+}
 
 function createInitialBoard() {
   board.innerHTML = '';
@@ -43,11 +79,9 @@ function handleClick(r, c) {
   const toRemove = findConnected(r, c, color);
   if (toRemove.length < 2) return;
 
-  toRemove.forEach(([rr, cc]) => {
-    boardData[rr][cc] = null;
-  });
-
+  toRemove.forEach(([rr, cc]) => boardData[rr][cc] = null);
   score += toRemove.length;
+
   applyGravity();
   centerColumns();
   updateBoard();
@@ -91,7 +125,6 @@ function applyGravity() {
 function centerColumns() {
   const newCols = [];
 
-  // Kivonjuk az üres oszlopokat
   for (let c = 0; c < cols; c++) {
     const hasBlock = boardData.some(row => row[c] !== null);
     if (hasBlock) {
@@ -134,40 +167,17 @@ function updateScore() {
   scoreDisplay.textContent = score;
 }
 
-function startTimer() {
-  const timer = setInterval(() => {
-    timeLeft--;
-    timerDisplay.textContent = timeLeft;
-
-    if (timeLeft % 10 === 0) {
-      addNewRow();
-      applyGravity();
-      centerColumns();
-      updateBoard();
-    }
-
-    if (timeLeft <= 0) {
-      clearInterval(timer);
-      alert('Lejárt az idő! Pontszám: ' + score);
-    }
-  }, 1000);
-}
-
 function addNewRow() {
   for (let r = 0; r < rows - 1; r++) {
     boardData[r] = [...boardData[r + 1]];
   }
 
-  // új színes sor legalul
   const newRow = Array(cols).fill(null).map(() => randomColor());
   boardData[rows - 1] = newRow;
 
-  // ha a legfelső sor nem üres → vége
   if (boardData[0].some(cell => cell !== null)) {
+    clearInterval(gameInterval);
+    clearInterval(newRowInterval);
     alert('A mező elérte a tetejét! Játék vége. Pontszám: ' + score);
-    location.reload(); // újratöltés
   }
 }
-
-createInitialBoard();
-startTimer();

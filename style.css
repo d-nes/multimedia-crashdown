@@ -1,18 +1,52 @@
 body {
     font-family: sans-serif;
-    text-align: center;
     background-color: #f0f0f0;
+    text-align: center;
   }
   
-  #info {
-    margin-bottom: 10px;
+  #container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    margin-top: 20px;
+  }
+  
+  #controls {
+    text-align: left;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  
+  #controls label {
+    display: block;
+    margin-top: 10px;
+  }
+  
+  #controls input {
+    width: 100px;
+    padding: 4px;
+    margin-top: 4px;
+  }
+  
+  #controls button {
+    margin-top: 15px;
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+    cursor: pointer;
+  }
+  
+  #controls .info {
+    margin-top: 20px;
     font-size: 1.2em;
   }
   
   #game-board {
     width: 320px;
     height: 400px;
-    margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(8, 40px);
     grid-template-rows: repeat(10, 40px);
@@ -22,9 +56,9 @@ body {
   .cell {
     width: 40px;
     height: 40px;
-    background-color: grey;
+    background-color: #ccc;
     border-radius: 5px;
-    cursor: pointer;
     transition: 0.2s;
+    cursor: pointer;
   }
   
