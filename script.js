@@ -4,32 +4,36 @@ const timerDisplay = document.getElementById('timer');
 
 const rows = 10;
 const cols = 8;
-let boardData = [];
+const activeRows = 5; // induláskor ennyi sor látszik
+let boardData = Array(rows).fill(null).map(() => Array(cols).fill(null));
 let score = 0;
 let timeLeft = 60;
 const colors = ['red', 'green', 'blue', 'yellow', 'purple'];
 
-function createBoard() {
-  boardData = [];
+function createInitialBoard() {
   board.innerHTML = '';
-
   for (let r = 0; r < rows; r++) {
-    const row = [];
     for (let c = 0; c < cols; c++) {
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      row.push(color);
-
       const cell = document.createElement('div');
       cell.classList.add('cell');
-      cell.style.backgroundColor = color;
       cell.dataset.row = r;
       cell.dataset.col = c;
-
       cell.addEventListener('click', () => handleClick(r, c));
       board.appendChild(cell);
     }
-    boardData.push(row);
   }
+
+  for (let r = rows - activeRows; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      boardData[r][c] = randomColor();
+    }
+  }
+
+  updateBoard();
+}
+
+function randomColor() {
+  return colors[Math.floor(Math.random() * colors.length)];
 }
 
 function handleClick(r, c) {
@@ -44,6 +48,8 @@ function handleClick(r, c) {
   });
 
   score += toRemove.length;
+  applyGravity();
+  centerColumns();
   updateBoard();
   updateScore();
 }
@@ -67,18 +73,59 @@ function findConnected(r, c, color, visited = {}) {
   return result;
 }
 
-function updateBoard() {
-  for (let i = board.children.length - 1; i >= 0; i--) {
-    const cell = board.children[i];
-    const r = parseInt(cell.dataset.row);
-    const c = parseInt(cell.dataset.col);
-    const color = boardData[r][c];
+function applyGravity() {
+  for (let c = 0; c < cols; c++) {
+    for (let r = rows - 2; r >= 0; r--) {
+      if (boardData[r][c] && !boardData[r + 1][c]) {
+        let rr = r;
+        while (rr + 1 < rows && !boardData[rr + 1][c]) {
+          boardData[rr + 1][c] = boardData[rr][c];
+          boardData[rr][c] = null;
+          rr++;
+        }
+      }
+    }
+  }
+}
 
-    if (color) {
-      cell.style.backgroundColor = color;
-    } else {
-      cell.style.backgroundColor = '#ccc';
-      cell.style.pointerEvents = 'none';
+function centerColumns() {
+  const newCols = [];
+
+  // Kivonjuk az üres oszlopokat
+  for (let c = 0; c < cols; c++) {
+    const hasBlock = boardData.some(row => row[c] !== null);
+    if (hasBlock) {
+      const colData = boardData.map(row => row[c]);
+      newCols.push(colData);
+    }
+  }
+
+  const padding = Math.floor((cols - newCols.length) / 2);
+  const newBoard = Array(rows).fill(null).map(() => Array(cols).fill(null));
+
+  for (let i = 0; i < newCols.length; i++) {
+    for (let r = 0; r < rows; r++) {
+      newBoard[r][padding + i] = newCols[i][r];
+    }
+  }
+
+  boardData = newBoard;
+}
+
+function updateBoard() {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const idx = r * cols + c;
+      const cell = board.children[idx];
+      const color = boardData[r][c];
+
+      if (color) {
+        cell.style.backgroundColor = color;
+        cell.style.pointerEvents = 'auto';
+      } else {
+        cell.style.backgroundColor = '#ccc';
+        cell.style.pointerEvents = 'none';
+      }
     }
   }
 }
@@ -92,6 +139,13 @@ function startTimer() {
     timeLeft--;
     timerDisplay.textContent = timeLeft;
 
+    if (timeLeft % 10 === 0) {
+      addNewRow();
+      applyGravity();
+      centerColumns();
+      updateBoard();
+    }
+
     if (timeLeft <= 0) {
       clearInterval(timer);
       alert('Lejárt az idő! Pontszám: ' + score);
@@ -99,5 +153,21 @@ function startTimer() {
   }, 1000);
 }
 
-createBoard();
+function addNewRow() {
+  for (let r = 0; r < rows - 1; r++) {
+    boardData[r] = [...boardData[r + 1]];
+  }
+
+  // új színes sor legalul
+  const newRow = Array(cols).fill(null).map(() => randomColor());
+  boardData[rows - 1] = newRow;
+
+  // ha a legfelső sor nem üres → vége
+  if (boardData[0].some(cell => cell !== null)) {
+    alert('A mező elérte a tetejét! Játék vége. Pontszám: ' + score);
+    location.reload(); // újratöltés
+  }
+}
+
+createInitialBoard();
 startTimer();
