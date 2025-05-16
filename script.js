@@ -240,17 +240,18 @@ function saveHighScore(name, score) {
 
 function renderHighScores() {
   fetch(SHEETDB_URL)
-    .then(res => res.json())
-    .then(data => {
-      highScoresList.innerHTML = '';
-      // data a SheetDB formátumú JSON, az adaptáld az alábbihoz:
-      data.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = `${item.Name}: ${item.Score} pont`;
-        highScoresList.appendChild(li);
-      });
-    })
-    .catch(console.error);
+  .then(res => res.json())
+  .then(data => {
+    data.sort((a, b) => parseInt(b.Score) - parseInt(a.Score)); // csökkenő sorrend
+    highScoresList.innerHTML = '';
+    data.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = `${item.Name}: ${item.Score} pont`;
+      highScoresList.appendChild(li);
+    });
+  })
+  .catch(console.error);
+
 }
 
 renderHighScores();
