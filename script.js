@@ -242,16 +242,23 @@ function renderHighScores() {
   fetch(SHEETDB_URL)
   .then(res => res.json())
   .then(data => {
-    data.sort((a, b) => parseInt(b.Score) - parseInt(a.Score)); // csökkenő sorrend
+    // Csak azokat az elemeket, amelyeknél Score egy szám
+    data = data.filter(item => !isNaN(Number(item.Score)));
+
+    // Csökkenő sorrend
+    data.sort((a, b) => Number(b.Score) - Number(a.Score));
+
+    // Csak az első 10 elem
+    const top10 = data.slice(0, 10);
+
     highScoresList.innerHTML = '';
-    data.forEach(item => {
+    top10.forEach(item => {
       const li = document.createElement('li');
       li.textContent = `${item.Name}: ${item.Score} pont`;
       highScoresList.appendChild(li);
     });
   })
   .catch(console.error);
-
 }
 
 renderHighScores();
