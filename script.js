@@ -224,21 +224,25 @@ function addNewRow() {
 }
 
 function saveHighScore(name, score) {
-  const scores = JSON.parse(localStorage.getItem('highScores') || '[]');
-  scores.push({ name, score });
-  scores.sort((a, b) => b.score - a.score);
-  localStorage.setItem('highScores', JSON.stringify(scores.slice(0, 10)));
-  renderHighScores();
+  fetch('save_score.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, score })
+  })
+  .then(() => renderHighScores());
 }
 
 function renderHighScores() {
-  const scores = JSON.parse(localStorage.getItem('highScores') || '[]');
-  highScoresList.innerHTML = '';
-  scores.forEach(({ name, score }) => {
-    const li = document.createElement('li');
-    li.textContent = `${name}: ${score} pont`;
-    highScoresList.appendChild(li);
-  });
+  fetch('load_scores.php')
+    .then(res => res.json())
+    .then(scores => {
+      highScoresList.innerHTML = '';
+      scores.forEach(({ name, score }) => {
+        const li = document.createElement('li');
+        li.textContent = `${name}: ${score} pont`;
+        highScoresList.appendChild(li);
+      });
+    });
 }
 
 renderHighScores();
