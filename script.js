@@ -223,25 +223,38 @@ function addNewRow() {
   }
 }
 
+const SHEETDB_URL = 'https://sheetdb.io/api/v1/mlsrjnalu29jw';
+
 function saveHighScore(name, score) {
-  const scores = JSON.parse(localStorage.getItem('highScores') || '[]');
-  scores.push({ name, score });
-  scores.sort((a, b) => b.score - a.score);
-  localStorage.setItem('highScores', JSON.stringify(scores.slice(0, 10)));
-  renderHighScores();
+  fetch(SHEETDB_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      data: { Name: name, Score: score }
+    })
+  })
+  .then(res => res.json())
+  .then(() => renderHighScores())
+  .catch(console.error);
 }
 
 function renderHighScores() {
-  const scores = JSON.parse(localStorage.getItem('highScores') || '[]');
-  highScoresList.innerHTML = '';
-  scores.forEach(({ name, score }) => {
-    const li = document.createElement('li');
-    li.textContent = `${name}: ${score} pont`;
-    highScoresList.appendChild(li);
-  });
+  fetch(SHEETDB_URL)
+    .then(res => res.json())
+    .then(data => {
+      highScoresList.innerHTML = '';
+      // data a SheetDB formátumú JSON, az adaptáld az alábbihoz:
+      data.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.Name}: ${item.Score} pont`;
+        highScoresList.appendChild(li);
+      });
+    })
+    .catch(console.error);
 }
 
 renderHighScores();
+
 
 function playPopSound() {
     const sound = document.getElementById('pop-sound');
