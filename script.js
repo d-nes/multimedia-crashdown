@@ -5,6 +5,7 @@ const startButton = document.getElementById('startButton');
 const gameTimeInput = document.getElementById('gameTime');
 const intervalInput = document.getElementById('intervalTime');
 const playerNameInput = document.getElementById('playerName');
+const highScoresList = document.getElementById('highScores');
 
 const rows = 10;
 const cols = 8;
@@ -13,10 +14,12 @@ const activeRows = 5;
 let boardData, score, timeLeft, gameInterval, newRowInterval;
 const colors = ['red', 'green', 'blue', 'yellow', 'purple'];
 
+// Gomb tiltása név hiányában
 playerNameInput.addEventListener('input', () => {
   startButton.disabled = playerNameInput.value.trim() === '';
 });
 
+// Start gomb esemény
 startButton.addEventListener('click', startGame);
 
 function startGame() {
@@ -45,6 +48,7 @@ function startGame() {
     if (timeLeft <= 0) {
       clearInterval(gameInterval);
       clearInterval(newRowInterval);
+      saveHighScore(playerName, score);
       alert(`Lejárt az idő, ${playerName}! Pontszámod: ${score}`);
     }
   }, 1000);
@@ -190,6 +194,27 @@ function addNewRow() {
     clearInterval(gameInterval);
     clearInterval(newRowInterval);
     const playerName = playerNameInput.value.trim();
+    saveHighScore(playerName, score);
     alert(`A mező elérte a tetejét, ${playerName}! Játék vége. Pontszám: ${score}`);
   }
 }
+
+function saveHighScore(name, score) {
+  const scores = JSON.parse(localStorage.getItem('highScores') || '[]');
+  scores.push({ name, score });
+  scores.sort((a, b) => b.score - a.score);
+  localStorage.setItem('highScores', JSON.stringify(scores.slice(0, 10)));
+  renderHighScores();
+}
+
+function renderHighScores() {
+  const scores = JSON.parse(localStorage.getItem('highScores') || '[]');
+  highScoresList.innerHTML = '';
+  scores.forEach(({ name, score }) => {
+    const li = document.createElement('li');
+    li.textContent = `${name}: ${score} pont`;
+    highScoresList.appendChild(li);
+  });
+}
+
+renderHighScores();
