@@ -3,26 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CrashDown játék</title>
+  <title>CrashDown</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>CrashDown</h1>
   <div id="container">
     <div id="controls">
-      <label for="gameTime">Játékidő (mp):</label>
-      <input type="number" id="gameTime" value="60" min="10" />
-
-      <label for="intervalTime">Új sor minden (mp):</label>
-      <input type="number" id="intervalTime" value="10" min="1" />
-
-      <button id="startButton">Indítás / Újraindítás</button>
-
-      <div class="info">
-        Idő: <span id="timer">--</span> mp<br />
-        Pont: <span id="score">0</span>
+        <label for="playerName">Név:</label>
+        <input type="text" id="playerName" placeholder="Írd be a neved" />
+      
+        <label for="gameTime">Játékidő (mp):</label>
+        <input type="number" id="gameTime" value="60" min="10" />
+      
+        <label for="intervalTime">Új sor minden (mp):</label>
+        <input type="number" id="intervalTime" value="5" min="1" />
+      
+        <button id="startButton" disabled>Indítás / Újraindítás</button>
+      
+        <div class="info">
+          Idő: <span id="timer">--</span> mp<br />
+          Pont: <span id="score">0</span>
+        </div>
       </div>
-    </div>
+      
 
     <div id="game-board"></div>
   </div>

@@ -4,6 +4,7 @@ const timerDisplay = document.getElementById('timer');
 const startButton = document.getElementById('startButton');
 const gameTimeInput = document.getElementById('gameTime');
 const intervalInput = document.getElementById('intervalTime');
+const playerNameInput = document.getElementById('playerName');
 
 const rows = 10;
 const cols = 8;
@@ -12,9 +13,19 @@ const activeRows = 5;
 let boardData, score, timeLeft, gameInterval, newRowInterval;
 const colors = ['red', 'green', 'blue', 'yellow', 'purple'];
 
+playerNameInput.addEventListener('input', () => {
+  startButton.disabled = playerNameInput.value.trim() === '';
+});
+
 startButton.addEventListener('click', startGame);
 
 function startGame() {
+  const playerName = playerNameInput.value.trim();
+  if (playerName === '') {
+    alert('Kérlek, adj meg egy nevet a játék indításához!');
+    return;
+  }
+
   clearInterval(gameInterval);
   clearInterval(newRowInterval);
 
@@ -34,7 +45,7 @@ function startGame() {
     if (timeLeft <= 0) {
       clearInterval(gameInterval);
       clearInterval(newRowInterval);
-      alert('Lejárt az idő! Pontszám: ' + score);
+      alert(`Lejárt az idő, ${playerName}! Pontszámod: ${score}`);
     }
   }, 1000);
 
@@ -178,6 +189,7 @@ function addNewRow() {
   if (boardData[0].some(cell => cell !== null)) {
     clearInterval(gameInterval);
     clearInterval(newRowInterval);
-    alert('A mező elérte a tetejét! Játék vége. Pontszám: ' + score);
+    const playerName = playerNameInput.value.trim();
+    alert(`A mező elérte a tetejét, ${playerName}! Játék vége. Pontszám: ${score}`);
   }
 }

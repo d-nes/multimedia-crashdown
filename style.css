@@ -43,6 +43,12 @@ body {
     margin-top: 20px;
     font-size: 1.2em;
   }
+
+  #controls input[type="text"] {
+    width: 200px;
+    padding: 4px;
+    margin-bottom: 10px;
+  }  
   
   #game-board {
     width: 320px;
