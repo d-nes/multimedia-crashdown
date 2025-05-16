@@ -1,0 +1,30 @@
+body {
+    font-family: sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+  }
+  
+  #info {
+    margin-bottom: 10px;
+    font-size: 1.2em;
+  }
+  
+  #game-board {
+    width: 320px;
+    height: 400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(8, 40px);
+    grid-template-rows: repeat(10, 40px);
+    gap: 2px;
+  }
+  
+  .cell {
+    width: 40px;
+    height: 40px;
+    background-color: grey;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  
