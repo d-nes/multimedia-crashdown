@@ -117,6 +117,10 @@ function handleClick(r, c) {
   toRemove.forEach(([rr, cc]) => boardData[rr][cc] = null);
   score += toRemove.length;
 
+  if (toRemove.length > 0) {
+    playPopSound();
+  }
+
   applyGravity();
   centerColumns();
   updateBoard();
@@ -238,3 +242,12 @@ function renderHighScores() {
 }
 
 renderHighScores();
+
+function playPopSound() {
+    const sound = document.getElementById('pop-sound');
+    if (sound) {
+      sound.currentTime = 0;
+      sound.volume = 0.5;
+      sound.play();
+    }
+  }
