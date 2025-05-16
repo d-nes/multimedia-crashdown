@@ -59,6 +59,14 @@ function startGame() {
     centerColumns();
     updateBoard();
   }, intervalTime * 1000);
+
+  const music = document.getElementById('background-music');
+  if (music) {
+    music.volume = 0.3;
+    music.play().catch((e) => {
+      console.log('A zene csak felhasználói interakció után indulhat:', e);
+    });
+  }
 }
 
 function createInitialBoard() {
