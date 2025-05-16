@@ -10,6 +10,7 @@ body {
     align-items: flex-start;
     gap: 40px;
     margin-top: 20px;
+    flex-wrap: wrap;
   }
   
   #controls {
@@ -43,7 +44,7 @@ body {
     margin-top: 20px;
     font-size: 1.2em;
   }
-
+  
   #controls input[type="text"] {
     width: 200px;
     padding: 4px;
@@ -67,7 +68,7 @@ body {
     transition: 0.2s;
     cursor: pointer;
   }
-
+  
   .container {
     display: flex;
     align-items: flex-start;
@@ -75,24 +76,59 @@ body {
   }
   
   #toplist {
-    width: 200px;
+    text-align: left;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
   }
   
   #toplist h3 {
     margin-bottom: 10px;
+    text-align: center;
   }
   
   #toplist ul {
     list-style: none;
     padding: 0;
+    margin: 0;
   }
   
   #toplist li {
-    background: #f0f0f0;
-    margin: 4px 0;
-    padding: 4px 8px;
-    border-radius: 6px;
+    background: #f2f2f2;
+    margin: 6px 0;
+    padding: 6px 10px;
+    border-radius: 8px;
     font-size: 14px;
   }
   
+  @media (max-width: 768px) {
+    #container {
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+  
+    #controls,
+    #toplist {
+      width: 90%;
+    }
+  
+    #game-board {
+      width: 100%;
+      max-width: 360px;
+      height: auto;
+      grid-template-columns: repeat(8, 1fr);
+      grid-auto-rows: 1fr;
+    }
+  
+    .cell {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+    }
+  
+    body {
+      padding: 10px;
+    }
+  }
   
